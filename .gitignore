@@ -5,3 +5,4 @@
 /idp_metadata/*.xml
 /sp.crt
 /sp.key
+.idea
