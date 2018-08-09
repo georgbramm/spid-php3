@@ -1,0 +1,7 @@
+/vendor/
+.directory
+.vscode
+.DS_Store
+/idp_metadata/*.xml
+/sp.crt
+/sp.key

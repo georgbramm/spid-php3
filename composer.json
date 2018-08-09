@@ -1,0 +1,10 @@
+{
+    "name": "italia/spid-php3",
+    "description": "PHP package for SPID authentication",
+    "type": "library",
+    "license": "BSD-3-Clause",
+    "require": {},
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^3.3"
+    }
+}
