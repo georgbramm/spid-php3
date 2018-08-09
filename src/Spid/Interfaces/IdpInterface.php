@@ -1,6 +1,6 @@
 <?php
 
-namespace Spid;
+namespace SpidPHP\Spid\Interfaces;
 
 interface IdpInterface
 {
