@@ -26,7 +26,7 @@ class Idp implements IdpInterface
         return $metadata;
     }
 
-    public function authnRequest($ass, $attr, $level, $returnTo)
+    public function authnRequest($ass = 0, $attr = 0, $level = 1, $returnTo = null)
     {
         // TODO: Implement authnRequest() method.
     }
