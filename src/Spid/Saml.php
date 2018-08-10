@@ -2,6 +2,7 @@
 
 namespace SpidPHP\Spid;
 
+use SpidPHP\Spid\Interfaces\SettingsInterface;
 use SpidPHP\Spid\Interfaces\SpInterface;
 use SpidPHP\Spid\Saml\Idp;
 
@@ -10,7 +11,8 @@ class Saml implements SpInterface
     private $settings;
     private $idps;
 
-    public function __construct($settings = null)
+
+    public function __construct(SettingsInterface $settings)
     {
         $this->settings = $settings;
     }

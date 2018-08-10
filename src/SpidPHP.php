@@ -2,15 +2,23 @@
 
 namespace SpidPHP;
 
-use SpidPHP\Spid\Interfaces\SpInterface;
- 
+use SpidPHP\Spid\Interfaces\SettingsInterface;
+use SpidPHP\Spid\Saml;
+
 class SpidPHP
 {
     private $protocol;
 
-    public function __construct(SpInterface $protocol)
+    public function __construct(SettingsInterface $settings, String $protocol = null)
     {
-        $this->protocol = $protocol;
+        switch ($protocol)
+        {
+            case 'saml':
+                $this->protocol = new Saml($settings);
+                break;
+            default:
+                $this->protocol = new Saml($settings);
+        }
     }
 
     public function __call($method, $arguments)
