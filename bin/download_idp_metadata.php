@@ -34,6 +34,6 @@ foreach ($idps->data as $idp) {
     echo "Contacting $metadata_url" . PHP_EOL;
     $xml = curl_exec($ch);
     curl_close($ch);
-    $file = "idp_metadata/$ipa_entity_code.xml";
+    $file = "example/idp_metadata/$ipa_entity_code.xml";
     file_put_contents($file, $xml);
 }

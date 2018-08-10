@@ -48,7 +48,7 @@ Before using this package, you must:
 
 1. Install prerequisites with composer
 
-2. Download and verify the Identity Provider (IdP) metadata files; it is advised to place them in a separate [idp_metadata/](idp_metadata/) directory. A convenience tool is provided for this purpose: [bin/download_idp_metadata.php](bin/download_idp_metadata.php).
+2. Download and verify the Identity Provider (IdP) metadata files; it is advised to place them in a separate [idp_metadata/](example/idp_metadata/) directory. A convenience tool is provided for this purpose: [bin/download_idp_metadata.php](bin/download_idp_metadata.php).
 
 3. Generate key and certificate for the Service Provider (SP). You can use the provided [Makefile](Makefile).
 
