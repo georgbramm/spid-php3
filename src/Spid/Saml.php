@@ -3,22 +3,32 @@
 namespace SpidPHP\Spid;
 
 use SpidPHP\Spid\Interfaces\SpInterface;
+use SpidPHP\Spid\Saml\Idp;
 
 class Saml implements SpInterface
 {
     private $settings;
-    private $idp;
+    private $idps;
 
-    public function __construct($settings = null) {
+    public function __construct($settings = null)
+    {
         $this->settings = $settings;
     }
 
-    public function loadIdpMetadata($path){}
+    public function loadIdpMetadata($path)
+    {
 
-    public function loadIdpFromFile($filename){
     }
 
-    public function getSPMetadata(){
+    public function loadIdpFromFile($filename)
+    {
+        $idp = new Idp();
+        $metadata = $idp->loadFromXml($filename);
+        $this->idps[$metadata['idpEntityId']] = $metadata;
+    }
+
+    public function getSPMetadata()
+    {
         $xml = new SimpleXMLElement("<md:EntityDescriptor></md:EntityDescriptor>");
         $xml->addAttribute('xmlns:md', 'urn:oasis:names:tc:SAML:2.0:metadata');
         $xml->addAttribute('EntityID', $this->idp['idpEntityId']);

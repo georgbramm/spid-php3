@@ -7,6 +7,7 @@ interface IdpInterface
     // Loads an IDP metadata from its XML file
     // $xmlFile: file path relative from the project root
     public function loadFromXml($xmlFile);
+
     // generate an AuthnRequest
     // https://github.com/italia/spid-perl/blob/master/lib/Net/SPID/SAML/IdP.pm#L65
     // $ass: index of assertion consumer service as per the SP metadata
