@@ -9,7 +9,7 @@ class SpidPHP
 {
     private $protocol;
 
-    public function __construct(SettingsInterface $settings, String $protocol = null)
+    public function __construct(array $settings, String $protocol = null)
     {
         switch ($protocol)
         {

@@ -2,24 +2,21 @@
 
 namespace SpidPHP\Spid\Saml;
 
-use SpidPHP\Spid\Interfaces\SettingsInterface;
-
-class Settings implements SettingsInterface
+class Settings
 {
-    var $entityID;
-    var $spKeyFile;
-    var $spCertFile;
-    var $spAssertionConsumerService;
-    var $spSLO;
-    var $spAttributeConsumingService;
-
-    public function __construct($entityID, $spKeyFile, $spCertFile, $spAssertionConsumerService, $spSLO, $spAttributeConsumingService = null)
+    private $validSettings = [
+    'sp_entityid' => 1,
+    'sp_key_file' => 1,
+    'sp_cert_file' => 1,
+    'sp_assertionconsumerservice' => 1,
+    'sp_singlelogoutservice' => 1,
+    'sp_attributeconsumingservice' => 0
+];
+    public static function validateSettings(array $settings)
     {
-        $this->entityID = $entityID;
-        $this->spKeyFile = $spKeyFile;
-        $this->spCertFile = $spCertFile;
-        $this->spAssertionConsumerService = $spAssertionConsumerService;
-        $this->spSLO = $spSLO;
-        $this->spAttributeConsumingService = $spAttributeConsumingService;
+        $missingSettings = array_diff_key(self::validSettings, $settings);
+        if (count($missingSettings) > 0) throw new \Exception('Missing settings fields: ' . implode(', ', $missingSettings));
+        $invalidFields = array_diff_key($settings, self::validSettings);
+        if (count($invalidFields) > 0) throw new \Exception('Invalid settings fields: ' . implode(', ', $invalidFields));
     }
 }

@@ -25,7 +25,7 @@ interface SpInterface
     //     'organisationName' => 'xxx', // optional
     //     'organizationUrl' => 'xxx', // optional
     // );
-    public function __construct(SettingsInterface $settings);
+    public function __construct(array $settings);
 
     // loads all Identity Providers metadata found in path
     public function loadIdpMetadata($path);

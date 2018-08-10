@@ -5,15 +5,24 @@ namespace SpidPHP\Spid;
 use SpidPHP\Spid\Interfaces\SettingsInterface;
 use SpidPHP\Spid\Interfaces\SpInterface;
 use SpidPHP\Spid\Saml\Idp;
+use SpidPHP\Spid\Saml\Settings;
 
 class Saml implements SpInterface
 {
     private $settings;
     private $idps;
+    private $validSettings = [
+        'sp_entityid' => 1,
+        'sp_key_file' => 1,
+        'sp_cert_file' => 1,
+        'sp_assertionconsumerservice' => 1,
+        'sp_singlelogoutservice' => 1,
+        'sp_attributeconsumingservice' => 0
+    ];
 
-
-    public function __construct(SettingsInterface $settings)
+    public function __construct(array $settings)
     {
+        Settings::validateSettings($settings);
         $this->settings = $settings;
     }
 
