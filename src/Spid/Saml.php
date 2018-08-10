@@ -65,7 +65,10 @@ class Saml implements SpInterface
         echo $xml->asXML();
     }
 
-    public function getIdp($idpName){}
+    public function getIdp($idpName)
+    {
+        return key_exists($idpName, $this->idps) ? $this->idps[$idpName] : false;
+    }
 
     public function login($idpName, $ass, $attr, $redirectTo = '', $level = 1){}
 
