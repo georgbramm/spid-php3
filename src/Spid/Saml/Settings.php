@@ -4,7 +4,7 @@ namespace SpidPHP\Spid\Saml;
 
 class Settings
 {
-    private $validSettings = [
+    private static $validSettings = [
     'sp_entityid' => 1,
     'sp_key_file' => 1,
     'sp_cert_file' => 1,
@@ -14,9 +14,17 @@ class Settings
 ];
     public static function validateSettings(array $settings)
     {
-        $missingSettings = array_diff_key(self::validSettings, $settings);
-        if (count($missingSettings) > 0) throw new \Exception('Missing settings fields: ' . implode(', ', $missingSettings));
-        $invalidFields = array_diff_key($settings, self::validSettings);
-        if (count($invalidFields) > 0) throw new \Exception('Invalid settings fields: ' . implode(', ', $invalidFields));
+        $missingSettings = array_diff_key(self::$validSettings, $settings);
+        $msg = 'Missing settings fields: ';
+        foreach ($missingSettings as $k => $v) {
+            $msg .= $k . ', ';
+        }
+        if (count($missingSettings) > 0) throw new \Exception($msg);
+        $invalidFields = array_diff_key($settings, self::$validSettings);
+        $msg = 'Invalid settings fields: ';
+        foreach ($invalidFields as $k => $v) {
+            $msg .= $k . ', ';
+        }
+        if (count($invalidFields) > 0) throw new \Exception($msg);
     }
 }

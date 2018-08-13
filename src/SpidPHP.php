@@ -2,7 +2,6 @@
 
 namespace SpidPHP;
 
-use SpidPHP\Spid\Interfaces\SettingsInterface;
 use SpidPHP\Spid\Saml;
 
 class SpidPHP
