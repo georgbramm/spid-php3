@@ -31,10 +31,15 @@ class BaseRequest
 
     public function redirectUrl($url)
     {
+        gzdeflate($this->xml);
         $parameters['SAMLRequest'] = base64_encode($this->xml);
         $parameters['RelayState'] = '';
         $parameters['SigAlg'] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
         $parameters['Signature'] = '';
+        $url = "";
+        $query = http_build_query($parameters);
+        $url .= $query;
+        openssl_encrypt($url);
     }
 
     public function buildRequestSignature($ref)
