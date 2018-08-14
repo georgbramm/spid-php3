@@ -2,18 +2,19 @@
 
 namespace SpidPHP\Spid\Saml\Out;
 
+use SpidPHP\Spid\Saml\Idp;
 use SpidPHP\Spid\Saml\Settings;
 
 class BaseRequest
 {
-    private $settings;
+    var $idp;
     var $xml;
     var $id;
     var $issueInstant;
 
-    public function __construct($settings)
+    public function __construct(Idp $idp)
     {
-        $this->settings = $settings;
+        $this->idp = $idp;
     }
 
     public function generateID()
@@ -38,7 +39,7 @@ class BaseRequest
 
     public function buildRequestSignature($ref)
     {
-        $cert = Settings::cleanOpenSsl($this->settings['sp_cert_file']);
+        $cert = Settings::cleanOpenSsl($this->idp->settings['sp_cert_file']);
 
         $signatureXml = <<<XML
 <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">

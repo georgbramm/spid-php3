@@ -12,7 +12,8 @@ class Settings
     'sp_singlelogoutservice' => 1,
     'sp_attributeconsumingservice' => 0,
     'sp_org_name' => 0,
-    'sp_org_display_name' => 0
+    'sp_org_display_name' => 0,
+    'idp_metadata_folder' => 1
 ];
     public static function validateSettings(array $settings)
     {

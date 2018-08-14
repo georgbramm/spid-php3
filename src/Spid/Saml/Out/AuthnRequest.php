@@ -11,6 +11,8 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
         $id = $this->generateID();
         $signature = $this->buildRequestSignature($id);
         $issueInstant = $this->generateIssueInstant();
+        $idpUrl = $this->idp->metadata['idpEntityId'];
+        $acsUrl = $this->idp->metadata['idpSSO'];
         // example ID _4d38c302617b5bf98951e65b4cf304711e2166df20
         $authnRequestXml = <<<XML
 <samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
@@ -18,9 +20,9 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     ID="$id" 
     Version="2.0"
     IssueInstant="$issueInstant"
-    Destination="https://spid.identityprovider.it"
-    AssertionConsumerServiceURL="http://spid.serviceprovider.it"
-    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+    Destination="$idpUrl"
+    AssertionConsumerServiceURL="$acsUrl"
+    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-REDIRECT"
     AttributeConsumingServiceIndex="1">
     $signature
     <saml:Issuer
@@ -31,7 +33,7 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     <samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient" />
     <samlp:RequestedAuthnContext Comparison="exact">
         <saml:AuthnContextClassRef>
-            https://www.spid.gov.it/SpidL2
+            https://www.spid.gov.it/SpidL1
         </saml:AuthnContextClassRef>
     </samlp:RequestedAuthnContext>
 </samlp:AuthnRequest>

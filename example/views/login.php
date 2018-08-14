@@ -1,0 +1,3 @@
+<?php
+$spid->login("testenv", "", "");
+?>

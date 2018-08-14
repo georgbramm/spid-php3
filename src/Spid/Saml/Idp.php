@@ -7,7 +7,7 @@ use SpidPHP\Spid\Saml\Out\AuthnRequest;
 
 class Idp implements IdpInterface
 {
-    private $metadata;
+    var $metadata;
     var $settings;
 
     public function __construct($settings)
@@ -17,11 +17,11 @@ class Idp implements IdpInterface
 
     public function loadFromXml($xmlFile)
     {
-        if (!file_exists($xmlFile . ".xml")) {
+        if (!file_exists($this->settings['idp_metadata_folder'] . $xmlFile . ".xml")) {
             throw new \Exception("Invalid IDP Requested", 1);
         }
 
-        $xml = simplexml_load_file($xmlFile . '.xml');
+        $xml = simplexml_load_file($this->settings['idp_metadata_folder'] . $xmlFile . '.xml');
 
         $metadata = array();
         $metadata['idpEntityId'] = $xml->attributes()->entityID->__toString();
@@ -29,13 +29,13 @@ class Idp implements IdpInterface
         $metadata['idpSLO'] = $xml->xpath('//SingleLogoutService')[0]->attributes()->Location->__toString();
         $metadata['idpCertValue'] = $xml->xpath('//X509Certificate')[0]->__toString();
 
-        $this->idp = $metadata;
-        return $metadata;
+        $this->metadata = $metadata;
+        return $this;
     }
 
     public function authnRequest($ass = 0, $attr = 0, $level = 1, $returnTo = null)
     {
-        $authn = new AuthnRequest($this->settings);
+        $authn = new AuthnRequest($this);
         return $authn->generateXml();
     }
 }

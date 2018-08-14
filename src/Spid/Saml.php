@@ -2,16 +2,14 @@
 
 namespace SpidPHP\Spid;
 
-use SpidPHP\Spid\Interfaces\SettingsInterface;
 use SpidPHP\Spid\Interfaces\SpInterface;
 use SpidPHP\Spid\Saml\Idp;
-use SpidPHP\Spid\Saml\Out\AuthnRequest;
 use SpidPHP\Spid\Saml\Settings;
 
 class Saml implements SpInterface
 {
     private $settings;
-    private $idps;
+    private $idps = [];
 
     public function __construct(array $settings)
     {
@@ -19,17 +17,12 @@ class Saml implements SpInterface
         $this->settings = $settings;
     }
 
-    public function loadIdpMetadata($path)
-    {
-        $idp = new Idp($this->settings);
-        $idp->authnRequest();
-    }
-
     public function loadIdpFromFile($filename)
     {
-        $idp = new Idp();
-        $metadata = $idp->loadFromXml($filename);
-        $this->idps[$metadata['idpEntityId']] = $metadata;
+        if (array_key_exists($filename, $this->idps)) return;
+        $idp = new Idp($this->settings);
+        $idp = $idp->loadFromXml($filename);
+        $this->idps[$filename] = $idp;
     }
 
     public function getSPMetadata()
@@ -99,36 +92,6 @@ EOD;
 EOD;
 
         $xml = new \SimpleXMLElement($xml . $xml2 . $xml3);
-/*        $xml->addAttribute('xmlns:md', 'urn:oasis:names:tc:SAML:2.0:metadata');
-        $xml->addAttribute('EntityID', 'entitid');*/
-        /*$signature = $xml->addChild('ds:Signature', 'valore');
-        $signature->addAttribute('xmlns:ds', 'http://www.w3.org/2000/09/xmldsig#');
-        $spSSODescriptor = $xml->addChild('md:SPSSODescriptor');
-        $spSSODescriptor->addAttribute();
-        $keyDescriptor = $spSSODescriptor->addChild('md:KeyDescriptor', 'valore');
-        $keyDescriptor->addAttribute('signing', 'true');
-        $singleLogoutService = $spSSODescriptor->addChild('SingleLogoutService');
-        $singleLogoutService->addAttribute('Binding', 'valore');
-        $singleLogoutService->addAttribute('Location', 'valore');
-        $singleLogoutService->addAttribute('ResponseLocation', 'valore');
-        $nameIDFormat = $spSSODescriptor->addChild('NameIDFormat', 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient');
-        foreach ($this->settings->ascs as $index => $acs) {
-            $currentAcs = $spSSODescriptor->addChild('md:AssertionConsumerService');
-            $currentAcs->addAttribute('index', $index);
-            if ($index == 0 )$currentAcs->addAttribute('isDefault', 'true');
-            $currentAcs->addAttribute('Binding', 'valore');
-            $currentAcs->addAttribute('Location', 'valore');
-        }
-        foreach ($this->settings->atcs as $index => $acs) {
-            $currentAcs = $spSSODescriptor->addChild('md:AttributeConsumingService');
-            $currentAcs->addAttribute('index', $index);
-            $currentAcs->addChild('', 'valore');
-            $currentAcs->addChild('', 'valore');
-        }
-        $organization = $xml->addChild('md:Organization');
-        $organization->addChild('OrganizationName', 'valore');
-        $organization->addChild('OrganizationDisplayName', 'valore');
-        $organization->addChild('OrganizationURL', 'valore');*/
 
         header('Content-type: text/xml');
         echo $xml->asXML();
@@ -139,11 +102,20 @@ EOD;
         return key_exists($idpName, $this->idps) ? $this->idps[$idpName] : false;
     }
 
-    public function login($idpName, $ass, $attr, $redirectTo = '', $level = 1){}
+    public function login($idpName, $ass, $attr, $redirectTo = '', $level = 1){
+        $this->loadIdpFromFile($idpName);
+        $idp = $this->idps[$idpName];
+        $idp->authnRequest();
+    }
 
     public function isAuthenticated(){}
 
     public function logout(){}
 
     public function getAttributes(){}
+
+    public function loadIdpMetadata($path)
+    {
+        // TODO: Implement loadIdpMetadata() method.
+    }
 }
