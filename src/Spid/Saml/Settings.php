@@ -14,17 +14,35 @@ class Settings
 ];
     public static function validateSettings(array $settings)
     {
-        $missingSettings = array_diff_key(self::$validSettings, $settings);
+        $missingSettings = array();
         $msg = 'Missing settings fields: ';
+        array_walk(self::$validSettings, function($v, $k) use ($missingSettings, $settings) {
+            if (self::$validSettings[$k] == 1 && !array_key_exists($k, $settings)) {
+                $missingSettings[$k] = 1;
+            }
+        });
         foreach ($missingSettings as $k => $v) {
             $msg .= $k . ', ';
         }
         if (count($missingSettings) > 0) throw new \Exception($msg);
+
         $invalidFields = array_diff_key($settings, self::$validSettings);
         $msg = 'Invalid settings fields: ';
         foreach ($invalidFields as $k => $v) {
             $msg .= $k . ', ';
         }
         if (count($invalidFields) > 0) throw new \Exception($msg);
+    }
+
+    public static function cleanOpenSsl($file)
+    {
+        $k = file_get_contents($file);
+        $ck = '';
+        foreach (preg_split("/((\r?\n)|(\r\n?))/", $k) as $l) {
+            if (strpos($l, '-----') === false) {
+                $ck .= $l;
+            }
+        }
+        return $ck;
     }
 }

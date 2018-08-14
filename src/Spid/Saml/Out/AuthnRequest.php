@@ -9,7 +9,7 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     public function generateXml()
     {
         $id = $this->generateID();
-        $signature = $this->buildRequestSignature($this->generateID());
+        $signature = $this->buildRequestSignature($id);
         $issueInstant = $this->generateIssueInstant();
         // example ID _4d38c302617b5bf98951e65b4cf304711e2166df20
         $authnRequestXml = <<<XML

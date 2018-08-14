@@ -8,13 +8,13 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
 $spid = new SpidPHP([
-    'sp_entityid' => 1,
-    'sp_key_file' => 1,
-    'sp_cert_file' => 1,
-    'sp_assertionconsumerservice' => 1,
-    'sp_singlelogoutservice' => 1,
-    'sp_attributeconsumingservice' => 0
+    'sp_entityid' => 'http://sp3.simevo.com/',
+    'sp_key_file' => '/Users/lorenzocattaneo/Projects/spid-php3/example/sp.key',
+    'sp_cert_file' => '/Users/lorenzocattaneo/Projects/spid-php3/example/sp.crt',
+    'sp_assertionconsumerservice' => 'http://sp3.simevo.com/acs',
+    'sp_singlelogoutservice' => 'http://sp3.simevo.com/slo',
 ]);
 
-$spid->loadIdpMetadata("");
+//$spid->loadIdpMetadata("");
+$spid->getSPMetadata();
 ?>

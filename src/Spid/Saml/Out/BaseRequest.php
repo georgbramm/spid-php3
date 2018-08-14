@@ -2,21 +2,29 @@
 
 namespace SpidPHP\Spid\Saml\Out;
 
+use SpidPHP\Spid\Saml\Settings;
+
 class BaseRequest
 {
+    private $settings;
     var $xml;
     var $id;
     var $issueInstant;
 
+    public function __construct($settings)
+    {
+        $this->settings = $settings;
+    }
+
     public function generateID()
     {
-        $this->id = '_' . random_bytes(16);
+        $this->id = '_' . bin2hex(random_bytes(16));
         return $this->id;
     }
 
     public function generateIssueInstant()
     {
-        $this->issueInstant = date();
+        $this->issueInstant = gmdate('Y-m-d\TH:i:sP');
         return $this->issueInstant;
     }
 
@@ -28,21 +36,9 @@ class BaseRequest
         $parameters['Signature'] = '';
     }
 
-    private static function cleanOpenSsl($k)
-    {
-        $ck = '';
-        foreach (preg_split("/((\r?\n)|(\r\n?))/", $k) as $l) {
-            if (strpos($l, '-----') === false) {
-                $ck .= $l;
-            }
-        }
-        return $ck;
-    }
-
     public function buildRequestSignature($ref)
     {
-        $sp_cert_raw = file_get_contents("cert file");
-        $cert = self::cleanOpenSsl($sp_cert_raw);
+        $cert = Settings::cleanOpenSsl($this->settings['sp_cert_file']);
 
         $signatureXml = <<<XML
 <ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">

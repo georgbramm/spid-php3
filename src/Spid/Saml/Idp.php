@@ -3,10 +3,17 @@
 namespace SpidPHP\Spid\Saml;
 
 use SpidPHP\Spid\Interfaces\IdpInterface;
+use SpidPHP\Spid\Saml\Out\AuthnRequest;
 
 class Idp implements IdpInterface
 {
     private $metadata;
+    var $settings;
+
+    public function __construct($settings)
+    {
+        $this->settings = $settings;
+    }
 
     public function loadFromXml($xmlFile)
     {
@@ -28,6 +35,7 @@ class Idp implements IdpInterface
 
     public function authnRequest($ass = 0, $attr = 0, $level = 1, $returnTo = null)
     {
-        // TODO: Implement authnRequest() method.
+        $authn = new AuthnRequest($this->settings);
+        return $authn->generateXml();
     }
 }
