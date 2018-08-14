@@ -10,11 +10,11 @@ class Idp implements IdpInterface
 
     public function loadFromXml($xmlFile)
     {
-        if (!file_exists(Constants::APP_PATH . $xmlFile . ".xml")) {
+        if (!file_exists($xmlFile . ".xml")) {
             throw new \Exception("Invalid IDP Requested", 1);
         }
 
-        $xml = simplexml_load_file(Constants::APP_PATH . $xmlFile . '.xml');
+        $xml = simplexml_load_file($xmlFile . '.xml');
 
         $metadata = array();
         $metadata['idpEntityId'] = $xml->attributes()->entityID->__toString();
