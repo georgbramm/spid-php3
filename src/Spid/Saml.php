@@ -12,14 +12,6 @@ class Saml implements SpInterface
 {
     private $settings;
     private $idps;
-    private $validSettings = [
-        'sp_entityid' => 1,
-        'sp_key_file' => 1,
-        'sp_cert_file' => 1,
-        'sp_assertionconsumerservice' => 1,
-        'sp_singlelogoutservice' => 1,
-        'sp_attributeconsumingservice' => 0
-    ];
 
     public function __construct(array $settings)
     {
@@ -89,15 +81,24 @@ class Saml implements SpInterface
             <md:RequestedAttribute Name="fiscalNumber"/>
         </md:AttributeConsumingService>
     </md:SPSSODescriptor>
+EOD;
+       $xml2 = '';
+       if(array_key_exists('sp_org_name', $this->settings)) {
+           $orgName = $this->settings['sp_org_name'];
+           $orgDisplayName = $this->settings['sp_org_display_name'];
+           $xml2 = <<<EOD
     <md:Organization>
-        <OrganizationName xml:lang="it">Service provider</OrganizationName>
-        <OrganizationDisplayName xml:lang="it">Nome service provider</OrganizationDisplayName>
-        <OrganizationURL xml:lang="it">http://spid.serviceprovider.it</OrganizationURL>
+        <OrganizationName xml:lang="it">$orgName</OrganizationName>
+        <OrganizationDisplayName xml:lang="it">$orgDisplayName</OrganizationDisplayName>
+        <OrganizationURL xml:lang="it">$entityID</OrganizationURL>
     </md:Organization>
+EOD;
+       }
+    $xml3 = <<<EOD
 </md:EntityDescriptor>
 EOD;
 
-        $xml = new \SimpleXMLElement($xml);
+        $xml = new \SimpleXMLElement($xml . $xml2 . $xml3);
 /*        $xml->addAttribute('xmlns:md', 'urn:oasis:names:tc:SAML:2.0:metadata');
         $xml->addAttribute('EntityID', 'entitid');*/
         /*$signature = $xml->addChild('ds:Signature', 'valore');

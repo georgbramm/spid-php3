@@ -10,7 +10,9 @@ class Settings
     'sp_cert_file' => 1,
     'sp_assertionconsumerservice' => 1,
     'sp_singlelogoutservice' => 1,
-    'sp_attributeconsumingservice' => 0
+    'sp_attributeconsumingservice' => 0,
+    'sp_org_name' => 0,
+    'sp_org_display_name' => 0
 ];
     public static function validateSettings(array $settings)
     {
