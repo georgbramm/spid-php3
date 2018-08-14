@@ -9,10 +9,10 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     public function generateXml()
     {
         $id = $this->generateID();
-        $signature = $this->buildRequestSignature($id);
+        $signature = $this->buildXmlSignature($id);
         $issueInstant = $this->generateIssueInstant();
-        $idpUrl = $this->idp->metadata['idpEntityId'];
-        $acsUrl = $this->idp->metadata['idpSSO'];
+        $idpUrl = $this->idp->metadata['idpSSO'];
+        $entityId = $this->idp->settings['sp_entityid'];
         // example ID _4d38c302617b5bf98951e65b4cf304711e2166df20
         $authnRequestXml = <<<XML
 <samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
@@ -21,20 +21,14 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     Version="2.0"
     IssueInstant="$issueInstant"
     Destination="$idpUrl"
-    AssertionConsumerServiceURL="$acsUrl"
-    ProtocolBinding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-REDIRECT"
-    AttributeConsumingServiceIndex="1">
-    $signature
+    AttributeConsumingServiceIndex="1"
+    AssertionConsumerServiceIndex="1">
     <saml:Issuer
-        NameQualifier="http://spid.serviceprovider.it"
-        Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">
-        spid-sp
-    </saml:Issuer>
+        NameQualifier="$entityId"
+        Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">$entityId</saml:Issuer>
     <samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient" />
     <samlp:RequestedAuthnContext Comparison="exact">
-        <saml:AuthnContextClassRef>
-            https://www.spid.gov.it/SpidL1
-        </saml:AuthnContextClassRef>
+        <saml:AuthnContextClassRef>https://www.spid.gov.it/SpidL1</saml:AuthnContextClassRef>
     </samlp:RequestedAuthnContext>
 </samlp:AuthnRequest>
 XML;

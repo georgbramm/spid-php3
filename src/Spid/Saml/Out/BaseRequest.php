@@ -25,7 +25,7 @@ class BaseRequest
 
     public function generateIssueInstant()
     {
-        $this->issueInstant = gmdate('Y-m-d\TH:i:sP');
+        $this->issueInstant = gmdate('Y-m-d\TH:i:s\Z');
         return $this->issueInstant;
     }
 
@@ -36,13 +36,13 @@ class BaseRequest
         $parameters['SAMLRequest'] = base64_encode($compressed);
         $parameters['RelayState'] = is_null($redirectTo) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}" : $redirectTo;
         $parameters['SigAlg'] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
-        $parameters['Signature'] = '';
+        $parameters['Signature'] = $this->buildUrlSignature($parameters['SAMLRequest'], $parameters['RelayState'], $parameters['SigAlg']);
         $query = http_build_query($parameters);
-        $url .= $query;
+        $url .= '?' . $query;
         return $url;
     }
 
-    public function buildRequestSignature($ref)
+    public function buildXmlSignature($ref)
     {
         $cert = Settings::cleanOpenSsl($this->idp->settings['sp_cert_file']);
 
@@ -69,5 +69,22 @@ class BaseRequest
 </ds:Signature>
 XML;
         return $signatureXml;
+    }
+
+    public function buildUrlSignature($samlRequest, $relayState, $signatureAlgo)
+    {
+        $key = file_get_contents($this->idp->settings['sp_key_file']);
+
+        //$key = Settings::cleanOpenSsl($this->idp->settings['sp_key_file']);
+        $key = openssl_get_privatekey($key, "");
+
+        $msg = "SAMLRequest=" . rawurlencode($samlRequest);
+        if (isset($relayState)) {
+            $msg .= "&RelayState=" . rawurlencode($relayState);
+        }
+        $msg .= "&SigAlg=" . rawurlencode($signatureAlgo);
+
+        openssl_sign($msg, $signature, $key, "SHA256");
+        return base64_encode($signature);
     }
 }

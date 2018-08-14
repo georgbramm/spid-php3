@@ -34,6 +34,10 @@ switch ($request_uri[0]) {
     case '/metadata':
         require './views/metadata.php';
         break;
+    // Acs page
+    case '/acs':
+        require './views/acs.php';
+        break;
     // Everything else
     default:
         echo "404 not found";
