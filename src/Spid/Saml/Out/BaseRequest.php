@@ -29,17 +29,17 @@ class BaseRequest
         return $this->issueInstant;
     }
 
-    public function redirectUrl($url)
+    public function redirectUrl($redirectTo = null)
     {
-        gzdeflate($this->xml);
-        $parameters['SAMLRequest'] = base64_encode($this->xml);
-        $parameters['RelayState'] = '';
+        $url = $this->idp->metadata['idpSSO'];
+        $compressed = gzdeflate($this->xml);
+        $parameters['SAMLRequest'] = base64_encode($compressed);
+        $parameters['RelayState'] = is_null($redirectTo) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}" : $redirectTo;
         $parameters['SigAlg'] = 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256';
         $parameters['Signature'] = '';
-        $url = "";
         $query = http_build_query($parameters);
         $url .= $query;
-        openssl_encrypt($url);
+        return $url;
     }
 
     public function buildRequestSignature($ref)

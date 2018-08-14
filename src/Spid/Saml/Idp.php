@@ -33,9 +33,9 @@ class Idp implements IdpInterface
         return $this;
     }
 
-    public function authnRequest($ass = 0, $attr = 0, $level = 1, $returnTo = null)
+    public function authnRequest($ass = 0, $attr = 0, $redirectTo = null, $level = 1)
     {
         $authn = new AuthnRequest($this);
-        return $authn->generateXml();
+        echo $authn->redirectUrl($redirectTo);
     }
 }

@@ -102,10 +102,10 @@ EOD;
         return key_exists($idpName, $this->idps) ? $this->idps[$idpName] : false;
     }
 
-    public function login($idpName, $ass, $attr, $redirectTo = '', $level = 1){
+    public function login($idpName, $ass, $attr, $redirectTo = null, $level = 1){
         $this->loadIdpFromFile($idpName);
         $idp = $this->idps[$idpName];
-        $idp->authnRequest();
+        $idp->authnRequest($ass, $attr, $redirectTo, $level);
     }
 
     public function isAuthenticated(){}
