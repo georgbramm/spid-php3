@@ -12,26 +12,8 @@ $decoded = base64_decode($arr['SAMLResponse']);
 $xmlstr = $decoded;
 $xml1 = new \DOMDocument();
 $xml1->loadXML($decoded);
-$x = simplexml_load_string($xml1->saveXML());
 
-
-libxml_use_internal_errors(true);
-
-$doc = simplexml_load_string($xmlstr);
-$xml = explode("\n", $xmlstr);
-
-if (!$doc) {
-    $errors = libxml_get_errors();
-
-    foreach ($errors as $error) {
-        echo display_xml_error($error, $xml);
-    }
-
-    libxml_clear_errors();
-}
-$doc->addChild('Ciao');
 echo "<pre>";
-
-//var_dump($xml->getElementsByTagName('Status')[0]->childNodes[0]->attributes[0]->value);
+var_dump($xml1->getgetElementsByTagName('Response')[0]);
 echo "</pre>";
 ?>

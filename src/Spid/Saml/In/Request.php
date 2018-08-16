@@ -20,8 +20,7 @@ class Request extends Base
         }
 
         $xmlString = base64_decode($_POST['SAMLResponse']);
-        $xml = new \DOMDocument();
-        $xml->loadXML($xmlString);
+        $xml = new \SimpleXMLElement();
 
         if (!isset($xml->attributes()->Version))
         {
@@ -47,7 +46,9 @@ class Request extends Base
         {
             throw new \Exception("Missing Destination attribute");
         }
-        if (!isset($xml->Status))
+        $domXml = new \DOMDocument();
+        $domXml->loadXML($xmlString);
+        if ($domXml->getElementsByTagName('Status')->length <= 0)
         {
             throw new \Exception("Missing Status element");
         }
