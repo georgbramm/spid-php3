@@ -4,12 +4,15 @@ namespace SpidPHP\Spid;
 
 use SpidPHP\Spid\Interfaces\SpInterface;
 use SpidPHP\Spid\Saml\Idp;
+use SpidPHP\Spid\Saml\In\Base;
+use SpidPHP\Spid\Saml\In\Response;
 use SpidPHP\Spid\Saml\Settings;
 
 class Saml implements SpInterface
 {
     private $settings;
     private $idps = [];
+    private $session;
 
     public function __construct(array $settings)
     {
@@ -102,16 +105,38 @@ EOD;
     }
 
     public function login($idpName, $ass, $attr, $redirectTo = null, $level = 1){
+        if (isset($_SESSION) && isset($_SESSION['spidSession'])) {
+            return false;
+        }
+
         $this->loadIdpFromFile($idpName);
         $idp = $this->idps[$idpName];
         $idp->authnRequest($ass, $attr, $redirectTo, $level);
     }
 
-    public function isAuthenticated(){}
+    public function isAuthenticated()
+    {
+        if (isset($_SESSION) && isset($_SESSION['spidSession'])) {
+            $this->session = $_SESSION['spidSession'];
+            return true;
+        }
+
+        $response = new Response();
+        $validated = $response->validate();
+        if ($validated instanceof Session) {
+            $_SESSION['spidSession'] = $validated;
+            $this->session = $validated;
+            return true;
+        }
+        return false;
+    }
 
     public function logout(){}
 
-    public function getAttributes(){}
+    public function getAttributes()
+    {
+        return $this->session->attributes;
+    }
 
     public function loadIdpMetadata($path)
     {

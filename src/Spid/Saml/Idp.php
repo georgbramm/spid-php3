@@ -22,7 +22,7 @@ class Idp implements IdpInterface
         }
 
         $xml = simplexml_load_file($this->settings['idp_metadata_folder'] . $xmlFile . '.xml');
-        print_r($xml);die;
+
         $metadata = array();
         $metadata['idpEntityId'] = $xml->attributes()->entityID->__toString();
         $metadata['idpSSO'] = $xml->xpath('//SingleSignOnService')[0]->attributes()->Location->__toString();
@@ -36,11 +36,12 @@ class Idp implements IdpInterface
     public function authnRequest($ass = 0, $attr = 0, $redirectTo = null, $level = 1)
     {
         $authn = new AuthnRequest($this);
+        $url = $authn->redirectUrl($redirectTo);
         $_SESSION['RequestID'] = $authn->id;
 
         header('Pragma: no-cache');
         header('Cache-Control: no-cache, must-revalidate');
-        header('Location: ' . $authn->redirectUrl($redirectTo));
+        header('Location: ' . $url);
         exit();
     }
 }

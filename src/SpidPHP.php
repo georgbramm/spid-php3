@@ -10,7 +10,9 @@ class SpidPHP
 
     public function __construct(array $settings, String $protocol = null)
     {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         switch ($protocol)
         {
             case 'saml':
