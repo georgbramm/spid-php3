@@ -3,7 +3,7 @@
 namespace SpidPHP\Spid\Saml;
 
 use SpidPHP\Spid\Interfaces\IdpInterface;
-use SpidPHP\Spid\Saml\Out\AuthnRequest;
+use SpidPHP\Spid\Saml\Out\Authn;
 
 class Idp implements IdpInterface
 {
@@ -35,7 +35,7 @@ class Idp implements IdpInterface
 
     public function authnRequest($ass = 0, $attr = 0, $redirectTo = null, $level = 1)
     {
-        $authn = new AuthnRequest($this);
+        $authn = new Authn($this);
         echo $authn->redirectUrl($redirectTo);
     }
 }

@@ -4,7 +4,7 @@ namespace SpidPHP\Spid\Saml\Out;
 
 use SpidPHP\Spid\Interfaces\AuthnRequestInterface;
 
-class AuthnRequest extends BaseRequest implements AuthnRequestInterface
+class Authn extends Base implements AuthnRequestInterface
 {
     public function generateXml()
     {
@@ -15,7 +15,7 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
         $entityId = $this->idp->settings['sp_entityid'];
         // example ID _4d38c302617b5bf98951e65b4cf304711e2166df20
         $authnRequestXml = <<<XML
-<samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+<samlp:Authn xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
     xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"
     ID="$id" 
     Version="2.0"
@@ -30,7 +30,7 @@ class AuthnRequest extends BaseRequest implements AuthnRequestInterface
     <samlp:RequestedAuthnContext Comparison="exact">
         <saml:AuthnContextClassRef>https://www.spid.gov.it/SpidL1</saml:AuthnContextClassRef>
     </samlp:RequestedAuthnContext>
-</samlp:AuthnRequest>
+</samlp:Authn>
 XML;
 
         $xml = new \SimpleXMLElement($authnRequestXml);

@@ -5,7 +5,7 @@ namespace SpidPHP\Spid\Saml\Out;
 use SpidPHP\Spid\Saml\Idp;
 use SpidPHP\Spid\Saml\Settings;
 
-class BaseRequest
+class Base
 {
     var $idp;
     var $xml;
