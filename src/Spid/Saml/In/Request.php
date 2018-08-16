@@ -20,7 +20,8 @@ class Request extends Base
         }
 
         $xmlString = base64_decode($_POST['SAMLResponse']);
-        $xml = new \SimpleXMLElement($xmlString);
+        $xml = new \DOMDocument();
+        $xml->loadXML($xmlString);
 
         if (!isset($xml->attributes()->Version))
         {
@@ -61,7 +62,7 @@ class Request extends Base
                 throw new \Exception("Missing AuthnStatement element");
             }
         }
-        
+
         // Response OK
         unset($_SESSION['RequestID']);
     }
