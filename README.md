@@ -131,9 +131,10 @@ TODO
 
 ### Unit tests
 
-TODO
-
-Unit tests will be performed with PHPunit.
+Launch unit tests with PHPunit:
+```
+phpunit --testdox tests
+```
 
 ### Linting
 
