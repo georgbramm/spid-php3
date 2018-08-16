@@ -39,43 +39,31 @@ class Saml implements SpInterface
         $attrcsArray = $this->settings['sp_attributeconsumingservice'] ?? array();
 
        $xml = <<<XML
-<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
-    entityID="$entityID"
-    ID="$id">
-    <md:SPSSODescriptor
-        protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
-        AuthnRequestsSigned="true"
-        WantAssertionsSigned="true">
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" entityID="$entityID" ID="$id">
+    <md:SPSSODescriptor protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol" AuthnRequestsSigned="true" WantAssertionsSigned="true">
         <md:KeyDescriptor use="signing">
             <ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
-                <ds:X509Data>
-                    <ds:X509Certificate>$cert</ds:X509Certificate>
-                </ds:X509Data>
+                <ds:X509Data><ds:X509Certificate>$cert</ds:X509Certificate></ds:X509Data>
             </ds:KeyInfo>
         </md:KeyDescriptor>
-        <SingleLogoutService
-            Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
-            Location="$sloLocation"/>
+        <SingleLogoutService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="$sloLocation"/>
         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
 XML;
        for ($i = 0; $i < count($assertcsArray); $i++)
        {
             $xml .= <<<XML
-            <md:AssertionConsumerService
-            index="$i" isDefault="true"
-            Location="$assertcsArray[$i]"
-            Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
+            <md:AssertionConsumerService index="$i" isDefault="true" Location="$assertcsArray[$i]" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
 XML;
-
        }
         for ($i = 0; $i < count($attrcsArray); $i++) {
             $xml .= <<<XML
-            <md:AttributeConsumingService index="$i">
-                <md:ServiceName xml:lang="it">Set $i</md:ServiceName>
-            
+<md:AttributeConsumingService index="$i">
+    <md:ServiceName xml:lang="it">Set $i</md:ServiceName>       
 XML;
            foreach ($attrcsArray[$i] as $attr) {
-               $xml .= '<md:RequestedAttribute Name="$attr"/>';
+               $xml .= <<<XML
+<md:RequestedAttribute Name="$attr"/>
+XML;
            }
     $xml .= '</md:AttributeConsumingService>';
 
@@ -87,11 +75,11 @@ XML;
            $orgName = $this->settings['sp_org_name'];
            $orgDisplayName = $this->settings['sp_org_display_name'];
            $xml .= <<<XML
-    <md:Organization>
-        <OrganizationName xml:lang="it">$orgName</OrganizationName>
-        <OrganizationDisplayName xml:lang="it">$orgDisplayName</OrganizationDisplayName>
-        <OrganizationURL xml:lang="it">$entityID</OrganizationURL>
-    </md:Organization>
+<md:Organization>
+    <OrganizationName xml:lang="it">$orgName</OrganizationName>
+    <OrganizationDisplayName xml:lang="it">$orgDisplayName</OrganizationDisplayName>
+    <OrganizationURL xml:lang="it">$entityID</OrganizationURL>
+</md:Organization>
 XML;
        }
     $xml .= '</md:EntityDescriptor>';

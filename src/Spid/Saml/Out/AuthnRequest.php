@@ -26,7 +26,7 @@ class AuthnRequest extends Base implements AuthnRequestInterface
     IssueInstant="$issueInstant"
     Destination="$idpUrl"
 XML;
-    $authnRequestXml .= "AttributeConsumingServiceIndex=$attrID";
+    $authnRequestXml .= is_null($attrID) ? "" : "AttributeConsumingServiceIndex=\"" . $attrID . "\"";
     $authnRequestXml .= <<<XML
     AssertionConsumerServiceIndex="$assertID">
     <saml:Issuer

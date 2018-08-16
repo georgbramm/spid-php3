@@ -15,7 +15,11 @@ $spid = new SpidPHP([
     'sp_singlelogoutservice' => 'http://sp3.simevo.com/slo',
     'sp_org_name' => 'test_simevo',
     'sp_org_display_name' => 'Test Simevo',
-    'idp_metadata_folder' => './idp_metadata/'
+    'idp_metadata_folder' => './idp_metadata/',
+    'sp_attributeconsumingservice' => [
+        ["name", "familyName", "fiscalNumber", "email"],
+        ["name", "familyName", "fiscalNumber", "email", "spidCode"]
+        ]
 ]);
 
 //$spid->loadIdpMetadata("");
