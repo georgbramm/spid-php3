@@ -25,9 +25,6 @@ class AuthnRequest extends Base implements AuthnRequestInterface
     Version="2.0"
     IssueInstant="$issueInstant"
     Destination="$idpUrl"
-XML;
-    $authnRequestXml .= is_null($attrID) ? "" : "AttributeConsumingServiceIndex=\"" . $attrID . "\"";
-    $authnRequestXml .= <<<XML
     AssertionConsumerServiceIndex="$assertID">
     <saml:Issuer
         NameQualifier="$entityId"
@@ -40,6 +37,11 @@ XML;
 XML;
 
         $xml = new \SimpleXMLElement($authnRequestXml);
+
+        if (!is_null($attrID)) {
+            $xml->addAttribute('AttributeConsumingServiceIndex', $attrID);
+        }
+
         $this->xml = $xml->asXML();
 
 /*        header('Content-type: text/xml');

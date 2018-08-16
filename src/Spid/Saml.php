@@ -52,17 +52,20 @@ XML;
        for ($i = 0; $i < count($assertcsArray); $i++)
        {
             $xml .= <<<XML
-            <md:AssertionConsumerService index="$i" isDefault="true" Location="$assertcsArray[$i]" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
+
+        <md:AssertionConsumerService index="$i" isDefault="true" Location="$assertcsArray[$i]" Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
 XML;
        }
         for ($i = 0; $i < count($attrcsArray); $i++) {
             $xml .= <<<XML
-<md:AttributeConsumingService index="$i">
-    <md:ServiceName xml:lang="it">Set $i</md:ServiceName>       
+
+        <md:AttributeConsumingService index="$i">
+            <md:ServiceName xml:lang="it">Set $i</md:ServiceName>       
 XML;
            foreach ($attrcsArray[$i] as $attr) {
                $xml .= <<<XML
-<md:RequestedAttribute Name="$attr"/>
+
+            <md:RequestedAttribute Name="$attr"/>
 XML;
            }
     $xml .= '</md:AttributeConsumingService>';
@@ -103,8 +106,10 @@ XML;
         if (!array_key_exists($assertId, $this->settings['sp_assertionconsumerservice'])) {
             throw new \Exception("Invalid Assertion Consumer Service ID");
         }
-        if (isset($this->settings['sp_attributeconsumingservice']) && !array_key_exists($attrId, $this->settings['sp_attributeconsumingservice'])) {
-            throw new \Exception("Invalid Attribute Consuming Service ID");
+        if (isset($this->settings['sp_attributeconsumingservice'])) {
+            if (!isset($this->settings['sp_attributeconsumingservice'][$attrId])) {
+                throw new \Exception("Invalid Attribute Consuming Service ID");
+            }
         }  else {
             $attrId = null;
         }
