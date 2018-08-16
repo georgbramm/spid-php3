@@ -39,7 +39,7 @@ interface SpInterface
     // LOW-LEVEL FUNCTION:
 
     // get an IdP
-    // the IdP can be used to generate an Authn:
+    // the IdP can be used to generate an AuthnRequest:
     //   $idp = getIdp('idp_1');
     //   $authnRequest = idp->$authnRequest(0, 1, 2, 'https://example.com/return_to_url');
     //   $url = $authnRequest->redirect_url();

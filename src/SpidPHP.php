@@ -10,6 +10,7 @@ class SpidPHP
 
     public function __construct(array $settings, String $protocol = null)
     {
+        session_start();
         switch ($protocol)
         {
             case 'saml':

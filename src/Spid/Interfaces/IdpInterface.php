@@ -8,7 +8,7 @@ interface IdpInterface
     // $xmlFile: file path relative from the project root
     public function loadFromXml($xmlFile);
 
-    // generate an Authn
+    // generate an AuthnRequest
     // https://github.com/italia/spid-perl/blob/master/lib/Net/SPID/SAML/IdP.pm#L65
     // $ass: index of assertion consumer service as per the SP metadata
     // $attr: index of attribute consuming service as per the SP metadata
