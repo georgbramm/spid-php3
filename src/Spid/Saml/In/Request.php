@@ -20,51 +20,72 @@ class Request extends Base
         }
 
         $xmlString = base64_decode($_POST['SAMLResponse']);
-        $xml = new \SimpleXMLElement();
+        $xml = new \DOMDocument();
+        $xml->loadXML($xmlString);
 
-        if (!isset($xml->attributes()->Version))
+        $root = $xml->getElementsByTagName('Response')->item(0);
+        if ($root->getAttribute('Version') == "")
         {
             throw new \Exception("missing Version attribute");
         }
-        elseif ($xml->attributes()->Version->__toString() != '2.0')
+        elseif ($root->getAttribute('Version') != '2.0')
         {
             throw new \Exception("Invalid Version attribute");
         }
-        if (!isset($xml->attributes()->IssueInstant))
+        if ($root->getAttribute('IssueInstant') == "")
         {
             throw new \Exception("Missing IssueInstant attribute");
         }
-        if (!isset($xml->attributes()->InResponseTo) || !isset($_SESSION['RequestID']))
+        if ($root->getAttribute('InResponseTo') == "" || !isset($_SESSION['RequestID']))
         {
             throw new \Exception("Missing InResponseTo attribute");
         }
-        elseif ($xml->attributes()->InResponseTo->__toString() != $_SESSION['RequestID'])
+        elseif ($root->getAttribute('InResponseTo') != $_SESSION['RequestID'])
         {
             throw new \Exception("Invalid InResponseTo attribute, expected " . $_SESSION['RequestID']);
         }
-        if (!isset($xml->attributes()->Destination))
+        if ($root->getAttribute('Destination') == "")
         {
             throw new \Exception("Missing Destination attribute");
         }
-        $domXml = new \DOMDocument();
-        $domXml->loadXML($xmlString);
-        if ($domXml->getElementsByTagName('Status')->length <= 0)
+
+        if ($xml->getElementsByTagName('Status')->length <= 0)
         {
             throw new \Exception("Missing Status element");
         }
-        elseif ($xml->Status->StatusCode->__toString() == 'urn:oasis:names:tc:SAML:2.0:status:Success')
+        elseif ($xml->getElementsByTagName('StatusCode')->item(0)->getAttribute('Value') == 'urn:oasis:names:tc:SAML:2.0:status:Success')
         {
-            if (!isset($xml->Assertion))
+            if ($xml->getElementsByTagName('Assertion')->length <= 0)
             {
                 throw new \Exception("Missing Assertion element");
             }
-            elseif (!isset($xml->Assertion->AuthnStatement))
+            elseif ($xml->getElementsByTagName('AuthnStatement')->length <= 0)
             {
                 throw new \Exception("Missing AuthnStatement element");
             }
         }
+        else
+        {
+            // Status code != success
+            return false;
+        }
 
         // Response OK
         unset($_SESSION['RequestID']);
+        return true;
+
+
+        idp_id          => $self->Issuer,
+        nameid          => $self->NameID,
+        session_index   => $self->SessionIndex,
+        attributes      => $self->attributes,
+        level           => $self->spid_level,
+        assertion_xml   => $self->xml,
+    }
+
+    public function spidSession()
+    {
+
+
     }
 }
