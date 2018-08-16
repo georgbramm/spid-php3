@@ -46,5 +46,23 @@ class Request extends Base
         {
             throw new \Exception("Missing Destination attribute");
         }
+        if (!isset($xml->Status))
+        {
+            throw new \Exception("Missing Status element");
+        }
+        elseif ($xml->Status->StatusCode->__toString() == 'urn:oasis:names:tc:SAML:2.0:status:Success')
+        {
+            if (!isset($xml->Assertion))
+            {
+                throw new \Exception("Missing Assertion element");
+            }
+            elseif (!isset($xml->Assertion->AuthnStatement))
+            {
+                throw new \Exception("Missing AuthnStatement element");
+            }
+        }
+        
+        // Response OK
+        unset($_SESSION['RequestID']);
     }
 }
