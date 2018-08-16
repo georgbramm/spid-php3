@@ -25,7 +25,7 @@ class Saml implements SpInterface
         $this->idps[$filename] = $idp;
     }
 
-    public function getSPMetadata()
+    public function getSPMetadata() : string
     {
         $entityID = $this->settings['sp_entityid'];
         $id = preg_replace('/[^a-z0-9_-]/', '_', $entityID);
@@ -93,8 +93,7 @@ EOD;
 
         $xml = new \SimpleXMLElement($xml . $xml2 . $xml3);
 
-        header('Content-type: text/xml');
-        echo $xml->asXML();
+        return $xml->asXML();
     }
 
     public function getIdp($idpName)

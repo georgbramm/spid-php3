@@ -27,6 +27,6 @@ class SpidPHP
         if (!in_array($method, $methods_implemented)) {
             throw new \Exception("Invalid method requested", 1);
         }
-        call_user_func_array(array($this->protocol, $method), $arguments);
+        return call_user_func_array(array($this->protocol, $method), $arguments);
     }
 }

@@ -9,13 +9,13 @@ error_reporting(E_ALL);
 
 $spid = new SpidPHP([
     'sp_entityid' => 'http://sp3.simevo.com/',
-    'sp_key_file' => '/Users/lorenzocattaneo/Projects/spid-php3/example/sp.key',
-    'sp_cert_file' => '/Users/lorenzocattaneo/Projects/spid-php3/example/sp.crt',
+    'sp_key_file' => './sp.key',
+    'sp_cert_file' => './sp.crt',
     'sp_assertionconsumerservice' => 'http://sp3.simevo.com/acs',
     'sp_singlelogoutservice' => 'http://sp3.simevo.com/slo',
     'sp_org_name' => 'test_simevo',
     'sp_org_display_name' => 'Test Simevo',
-    'idp_metadata_folder' => '/Users/lorenzocattaneo/Projects/spid-php3/example/idp_metadata/'
+    'idp_metadata_folder' => './idp_metadata/'
 ]);
 
 //$spid->loadIdpMetadata("");

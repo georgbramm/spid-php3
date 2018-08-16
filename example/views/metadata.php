@@ -1,3 +1,3 @@
 <?php
-$spid->getSPMetadata();
-?>
+header('Content-type: text/xml');
+echo $spid->getSPMetadata();
