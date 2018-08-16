@@ -9,6 +9,9 @@ class Idp implements IdpInterface
 {
     var $metadata;
     var $settings;
+    var $assertID;
+    var $attrID;
+    var $level = 1;
 
     public function __construct($settings)
     {
@@ -33,8 +36,12 @@ class Idp implements IdpInterface
         return $this;
     }
 
-    public function authnRequest($ass = 0, $attr = 0, $redirectTo = null, $level = 1)
+    public function authnRequest($ass, $attr, $redirectTo = null, $level = 1)
     {
+        $this->assertID = $ass;
+        $this->attrID = $attr;
+        $this->level = $level;
+
         $authn = new AuthnRequest($this);
         $url = $authn->redirectUrl($redirectTo);
         $_SESSION['RequestID'] = $authn->id;

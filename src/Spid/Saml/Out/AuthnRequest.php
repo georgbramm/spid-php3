@@ -13,6 +13,10 @@ class AuthnRequest extends Base implements AuthnRequestInterface
         $issueInstant = $this->generateIssueInstant();
         $idpUrl = $this->idp->metadata['idpSSO'];
         $entityId = $this->idp->settings['sp_entityid'];
+
+        $assertID = $this->idp->assertID;
+        $attrID = $this->idp->attrID;
+        $level = $this->idp->level;
         // example ID _4d38c302617b5bf98951e65b4cf304711e2166df20
         $authnRequestXml = <<<XML
 <samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
@@ -21,14 +25,16 @@ class AuthnRequest extends Base implements AuthnRequestInterface
     Version="2.0"
     IssueInstant="$issueInstant"
     Destination="$idpUrl"
-    AttributeConsumingServiceIndex="1"
-    AssertionConsumerServiceIndex="1">
+XML;
+    $authnRequestXml .= "AttributeConsumingServiceIndex=$attrID";
+    $authnRequestXml .= <<<XML
+    AssertionConsumerServiceIndex="$assertID">
     <saml:Issuer
         NameQualifier="$entityId"
         Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity">$entityId</saml:Issuer>
     <samlp:NameIDPolicy Format="urn:oasis:names:tc:SAML:2.0:nameid-format:transient" />
     <samlp:RequestedAuthnContext Comparison="exact">
-        <saml:AuthnContextClassRef>https://www.spid.gov.it/SpidL1</saml:AuthnContextClassRef>
+        <saml:AuthnContextClassRef>https://www.spid.gov.it/SpidL$level</saml:AuthnContextClassRef>
     </samlp:RequestedAuthnContext>
 </samlp:AuthnRequest>
 XML;

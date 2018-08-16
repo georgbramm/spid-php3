@@ -35,9 +35,10 @@ class Saml implements SpInterface
         $cert = Settings::cleanOpenSsl($this->settings['sp_cert_file']);
 
         $sloLocation = $this->settings['sp_singlelogoutservice'];
-        $acsLocation = $this->settings['sp_assertionconsumerservice'];
+        $assertcsArray = $this->settings['sp_assertionconsumerservice'] ?? array();
+        $attrcsArray = $this->settings['sp_attributeconsumingservice'] ?? array();
 
-       $xml = <<<EOD
+       $xml = <<<XML
 <md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
     entityID="$entityID"
     ID="$id">
@@ -56,45 +57,48 @@ class Saml implements SpInterface
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
             Location="$sloLocation"/>
         <NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</NameIDFormat>
-        <md:AssertionConsumerService
-            index="0" isDefault="true"
-            Location="$acsLocation"
+XML;
+       for ($i = 0; $i < count($assertcsArray); $i++)
+       {
+            $xml .= <<<XML
+            <md:AssertionConsumerService
+            index="$i" isDefault="true"
+            Location="$assertcsArray[$i]"
             Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
-        <md:AssertionConsumerService
-            index="1"
-            Location="$acsLocation"
-            Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"/>
-        <md:AttributeConsumingService index="0">
-            <md:ServiceName xml:lang="it">Set 0</md:ServiceName>
-            <md:RequestedAttribute Name="name"/>
-            <md:RequestedAttribute Name="familyName"/>
-            <md:RequestedAttribute Name="fiscalNumber"/>
-            <md:RequestedAttribute Name="email"/>
-        </md:AttributeConsumingService>
-            <md:AttributeConsumingService index="1">
-            <md:ServiceName xml:lang="it">Set 1</md:ServiceName>
-            <md:RequestedAttribute Name="spidCode"/>
-            <md:RequestedAttribute Name="fiscalNumber"/>
-        </md:AttributeConsumingService>
-    </md:SPSSODescriptor>
-EOD;
-       $xml2 = '';
+XML;
+
+       }
+        for ($i = 0; $i < count($attrcsArray); $i++) {
+            $xml .= <<<XML
+            <md:AttributeConsumingService index="$i">
+                <md:ServiceName xml:lang="it">Set $i</md:ServiceName>
+            
+XML;
+           foreach ($attrcsArray[$i] as $attr) {
+               $xml .= '<md:RequestedAttribute Name="$attr"/>';
+           }
+    $xml .= '</md:AttributeConsumingService>';
+
+        }
+       $xml .= '</md:SPSSODescriptor>';
+
+
        if(array_key_exists('sp_org_name', $this->settings)) {
            $orgName = $this->settings['sp_org_name'];
            $orgDisplayName = $this->settings['sp_org_display_name'];
-           $xml2 = <<<EOD
+           $xml .= <<<XML
     <md:Organization>
         <OrganizationName xml:lang="it">$orgName</OrganizationName>
         <OrganizationDisplayName xml:lang="it">$orgDisplayName</OrganizationDisplayName>
         <OrganizationURL xml:lang="it">$entityID</OrganizationURL>
     </md:Organization>
-EOD;
+XML;
        }
-    $xml3 = <<<EOD
-</md:EntityDescriptor>
-EOD;
+    $xml .= '</md:EntityDescriptor>';
 
-        $xml = new \SimpleXMLElement($xml . $xml2 . $xml3);
+        header('Content-type: text/xml');
+    echo $xml; die;
+        $xml = new \SimpleXMLElement($xml);
 
         return $xml->asXML();
     }
@@ -104,14 +108,22 @@ EOD;
         return key_exists($idpName, $this->idps) ? $this->idps[$idpName] : false;
     }
 
-    public function login($idpName, $ass, $attr, $redirectTo = null, $level = 1){
+    public function login($idpName, $assertId, $attrId, $redirectTo = null, $level = 1){
         if (isset($_SESSION) && isset($_SESSION['spidSession'])) {
             return false;
+        }
+        if (!array_key_exists($assertId, $this->settings['sp_assertionconsumerservice'])) {
+            throw new \Exception("Invalid Assertion Consumer Service ID");
+        }
+        if (isset($this->settings['sp_attributeconsumingservice']) && !array_key_exists($attrId, $this->settings['sp_attributeconsumingservice'])) {
+            throw new \Exception("Invalid Attribute Consuming Service ID");
+        }  else {
+            $attrId = null;
         }
 
         $this->loadIdpFromFile($idpName);
         $idp = $this->idps[$idpName];
-        $idp->authnRequest($ass, $attr, $redirectTo, $level);
+        $idp->authnRequest($assertId, $attrId, $redirectTo, $level);
     }
 
     public function isAuthenticated()
