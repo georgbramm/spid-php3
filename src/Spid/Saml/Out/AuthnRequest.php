@@ -1,8 +1,8 @@
 <?php
 
-namespace SpidPHP\Spid\Saml\Out;
+namespace Italia\Spid3\Spid\Saml\Out;
 
-use SpidPHP\Spid\Interfaces\AuthnRequestInterface;
+use Italia\Spid3\Interfaces\AuthnRequestInterface;
 
 class AuthnRequest extends Base implements AuthnRequestInterface
 {
@@ -50,7 +50,9 @@ XML;
 
     public function redirectUrl($redirectTo = null)
     {
-        if (is_null($this->xml)) $this->generateXml();
+        if (is_null($this->xml)) {
+            $this->generateXml();
+        }
         $url = $this->idp->metadata['idpSSO'];
         return parent::redirectUrl($url, $redirectTo);
     }

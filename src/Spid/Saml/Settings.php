@@ -1,6 +1,6 @@
 <?php
 
-namespace SpidPHP\Spid\Saml;
+namespace Italia\Spid3\Spid\Saml;
 
 class Settings
 {
@@ -14,12 +14,12 @@ class Settings
     'sp_org_name' => 0,
     'sp_org_display_name' => 0,
     'idp_metadata_folder' => 1
-];
+    ];
     public static function validateSettings(array $settings)
     {
         $missingSettings = array();
         $msg = 'Missing settings fields: ';
-        array_walk(self::$validSettings, function($v, $k) use ($missingSettings, $settings) {
+        array_walk(self::$validSettings, function ($v, $k) use ($missingSettings, $settings) {
             if (self::$validSettings[$k] == 1 && !array_key_exists($k, $settings)) {
                 $missingSettings[$k] = 1;
             }
@@ -27,14 +27,18 @@ class Settings
         foreach ($missingSettings as $k => $v) {
             $msg .= $k . ', ';
         }
-        if (count($missingSettings) > 0) throw new \Exception($msg);
+        if (count($missingSettings) > 0) {
+            throw new \Exception($msg);
+        }
 
         $invalidFields = array_diff_key($settings, self::$validSettings);
         $msg = 'Invalid settings fields: ';
         foreach ($invalidFields as $k => $v) {
             $msg .= $k . ', ';
         }
-        if (count($invalidFields) > 0) throw new \Exception($msg);
+        if (count($invalidFields) > 0) {
+            throw new \Exception($msg);
+        }
     }
 
     public static function cleanOpenSsl($file)

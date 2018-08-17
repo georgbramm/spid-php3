@@ -1,20 +1,20 @@
 <?php
 
-namespace SpidPHP\Spid\Saml;
+namespace Italia\Spid3\Spid\Saml;
 
-use SpidPHP\Spid\Interfaces\IdpInterface;
-use SpidPHP\Spid\Saml\Out\AuthnRequest;
-use SpidPHP\Spid\Saml\Out\LogoutRequest;
+use Italia\Spid3\Spid\Interfaces\IdpInterface;
+use Italia\Spid3\Spid\Saml\Out\AuthnRequest;
+use Italia\Spid3\Spid\Saml\Out\LogoutRequest;
 
 class Idp implements IdpInterface
 {
-    var $idpFileName;
-    var $metadata;
-    var $settings;
-    var $assertID;
-    var $attrID;
-    var $level = 1;
-    var $session;
+    public $idpFileName;
+    public $metadata;
+    public $settings;
+    public $assertID;
+    public $attrID;
+    public $level = 1;
+    public $session;
 
     public function __construct($settings)
     {

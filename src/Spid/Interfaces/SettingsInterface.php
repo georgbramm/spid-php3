@@ -1,6 +1,6 @@
 <?php
 
-namespace SpidPHP\Spid\Interfaces;
+namespace Italia\Spid3\Spid\Interfaces;
 
 interface SettingsInterface
 {

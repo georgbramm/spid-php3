@@ -63,29 +63,21 @@ bin/download_idp_metadata.php
 
 ### Usage
 
-All classes provided by this package reside in the `Spid` namespace.
+All classes provided by this package reside in the `Italia\Spid3` namespace.
 
 Load them using the composer-generated autoloader:
 ```
 require_once(__DIR__ . "/../vendor/autoload.php");
 ```
 
-The main class is `Spid\Sp` (service provider), sample instantiation:
+The main class is `Italia\Spid3\Sp` (service provider), sample instantiation:
 
 ```
 $settings = array(
     'entityId' => 'https://example.com/myservice',
-    'keyFile' => '/srv/spid-myservice/sp.key',
-    'certFile' => '/srv/spid-myservice/sp.crt',
-    'sls' => '/?sls',
-    'assCs' => array(
-        '/?acs1',
-    ),
-    'attrCs' => array(
-        array('name', 'familyName', 'fiscalNumber', 'email'),
-    )
+    ...
 );
-$sp = new Spid\Sp($settings);
+$sp = new Italia\Spid3\Sp($settings);
 ```
 
 Register the IdPs with the service provider, either load all IdP metadata at once:

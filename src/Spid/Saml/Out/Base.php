@@ -1,16 +1,16 @@
 <?php
 
-namespace SpidPHP\Spid\Saml\Out;
+namespace Italia\Spid3\Spid\Saml\Out;
 
-use SpidPHP\Spid\Saml\Idp;
-use SpidPHP\Spid\Saml\Settings;
+use Italia\Spid3\Saml\Idp;
+use Italia\Spid3\Saml\Settings;
 
 class Base
 {
-    var $idp;
-    var $xml;
-    var $id;
-    var $issueInstant;
+    public $idp;
+    public $xml;
+    public $id;
+    public $issueInstant;
 
     public function __construct(Idp $idp)
     {

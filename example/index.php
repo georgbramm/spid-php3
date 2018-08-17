@@ -1,13 +1,11 @@
 <?php
 require_once(__DIR__ . "/../vendor/autoload.php");
 
-use SpidPHP\SpidPHP;
-
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-$spid = new SpidPHP([
+$settings = [
     'sp_entityid' => 'http://sp3.simevo.com/',
     'sp_key_file' => './sp.key',
     'sp_cert_file' => './sp.crt',
@@ -20,7 +18,8 @@ $spid = new SpidPHP([
         ["name", "familyName", "fiscalNumber", "email"],
         ["name", "familyName", "fiscalNumber", "email", "spidCode"]
         ]
-]);
+    ];
+$sp = new Italia\Spid3\Sp($settings);
 
 //$spid->loadIdpMetadata("");
 $request_uri = explode('?', $_SERVER['REQUEST_URI'], 2);
@@ -47,4 +46,3 @@ switch ($request_uri[0]) {
         echo "404 not found";
         break;
 }
-?>

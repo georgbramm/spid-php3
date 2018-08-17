@@ -1,6 +1,6 @@
 <?php
 
-namespace SpidPHP\Spid\Saml\Out;
+namespace Italia\Spid3\Spid\Saml\Out;
 
 class LogoutRequest extends Base
 {
@@ -13,12 +13,13 @@ class LogoutRequest extends Base
     <SessionIndex>$index</SessionIndex>
 </LogoutRequest>
 XML;
-
     }
 
     public function redirectUrl($redirectTo = null)
     {
-        if (is_null($this->xml)) $this->generateXml();
+        if (is_null($this->xml)) {
+            $this->generateXml();
+        }
         $url = $this->idp->metadata['idpSSO'];
         return parent::redirectUrl($url, $redirectTo);
     }

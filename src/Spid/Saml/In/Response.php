@@ -1,15 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lorenzocattaneo
- * Date: 16/08/18
- * Time: 09:52
- */
 
-namespace SpidPHP\Spid\Saml\In;
+namespace Italia\Spid3\Spid\Saml\In;
 
-
-use SpidPHP\Spid\Session;
+use Italia\Spid3\Session;
 
 class Response extends Base
 {
@@ -67,7 +60,7 @@ class Response extends Base
         $session = new Session();
 
         $attributes = array();
-        if ($xml->getElementsByTagName('AttributeStatement')->length >0 ) {
+        if ($xml->getElementsByTagName('AttributeStatement')->length >0) {
             foreach ($xml->getElementsByTagName('AttributeStatement')->item(0)->childNodes as $attr) {
                 $attributes[$attr->getAttribute('Name')] = $attr->nodeValue;
             }

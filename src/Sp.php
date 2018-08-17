@@ -1,10 +1,8 @@
 <?php
 
-namespace SpidPHP;
+namespace Italia\Spid3;
 
-use SpidPHP\Spid\Saml;
-
-class SpidPHP
+class Sp
 {
     private $protocol;
 
@@ -13,13 +11,12 @@ class SpidPHP
         if (session_status() == PHP_SESSION_NONE) {
             session_start();
         }
-        switch ($protocol)
-        {
+        switch ($protocol) {
             case 'saml':
-                $this->protocol = new Saml($settings);
+                $this->protocol = new Spid\Saml($settings);
                 break;
             default:
-                $this->protocol = new Saml($settings);
+                $this->protocol = new Spid\Saml($settings);
         }
     }
 

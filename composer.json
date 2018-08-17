@@ -9,7 +9,7 @@
     },
     "autoload": {
         "psr-4": {
-            "SpidPHP\\": "src/"
+            "Italia\\Spid3\\": "src/"
         }
     }
 }

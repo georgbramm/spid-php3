@@ -1,10 +1,10 @@
 <?php
 
-namespace SpidPHP\Spid;
+namespace Italia\Spid3\Spid;
 
 class Session
 {
-    var $idp;
-    var $level;
-    var $attributes;
+    public $idp;
+    public $level;
+    public $attributes;
 }
