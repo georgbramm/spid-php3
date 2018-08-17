@@ -29,9 +29,8 @@ class Base
         return $this->issueInstant;
     }
 
-    public function redirectUrl($redirectTo = null)
+    public function redirectUrl($url, $redirectTo = null)
     {
-        $url = $this->idp->metadata['idpSSO'];
         $compressed = gzdeflate($this->xml);
         $parameters['SAMLRequest'] = base64_encode($compressed);
         $parameters['RelayState'] = is_null($redirectTo) ? (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "//{$_SERVER['HTTP_HOST']}{$_SERVER['REQUEST_URI']}" : $redirectTo;

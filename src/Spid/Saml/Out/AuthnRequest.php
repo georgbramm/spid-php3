@@ -51,6 +51,7 @@ XML;
     public function redirectUrl($redirectTo = null)
     {
         if (is_null($this->xml)) $this->generateXml();
-        return parent::redirectUrl($redirectTo);
+        $url = $this->idp->metadata['idpSSO'];
+        return parent::redirectUrl($url, $redirectTo);
     }
 }

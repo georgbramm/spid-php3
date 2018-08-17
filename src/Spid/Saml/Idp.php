@@ -4,14 +4,17 @@ namespace SpidPHP\Spid\Saml;
 
 use SpidPHP\Spid\Interfaces\IdpInterface;
 use SpidPHP\Spid\Saml\Out\AuthnRequest;
+use SpidPHP\Spid\Saml\Out\LogoutRequest;
 
 class Idp implements IdpInterface
 {
+    var $idpFileName;
     var $metadata;
     var $settings;
     var $assertID;
     var $attrID;
     var $level = 1;
+    var $session;
 
     public function __construct($settings)
     {
@@ -32,6 +35,7 @@ class Idp implements IdpInterface
         $metadata['idpSLO'] = $xml->xpath('//SingleLogoutService')[0]->attributes()->Location->__toString();
         $metadata['idpCertValue'] = $xml->xpath('//X509Certificate')[0]->__toString();
 
+        $this->idpFileName = $xmlFile;
         $this->metadata = $metadata;
         return $this;
     }
@@ -45,6 +49,19 @@ class Idp implements IdpInterface
         $authn = new AuthnRequest($this);
         $url = $authn->redirectUrl($redirectTo);
         $_SESSION['RequestID'] = $authn->id;
+        $_SESSION['idpName'] = $this->idpFileName;
+
+        header('Pragma: no-cache');
+        header('Cache-Control: no-cache, must-revalidate');
+        header('Location: ' . $url);
+        exit();
+    }
+
+    public function logoutRequest(Session $session, $redirectTo = null)
+    {
+        $this->session = $session;
+        $request = new LogoutRequest($this);
+        $url = $request->redirectUrl($redirectTo);
 
         header('Pragma: no-cache');
         header('Cache-Control: no-cache, must-revalidate');

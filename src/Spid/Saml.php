@@ -100,7 +100,7 @@ XML;
     }
 
     public function login($idpName, $assertId, $attrId, $redirectTo = null, $level = 1){
-        if (isset($_SESSION) && isset($_SESSION['spidSession'])) {
+        if ($this->isAuthenticated()) {
             return false;
         }
         if (!array_key_exists($assertId, $this->settings['sp_assertionconsumerservice'])) {
@@ -136,7 +136,15 @@ XML;
         return false;
     }
 
-    public function logout(){}
+    public function logout($redirectTo = null)
+    {
+        if ($this->isAuthenticated() !== false) {
+            return false;
+        }
+        $this->loadIdpFromFile($this->session->idp);
+        $idp = $this->idps[$this->session->idp];
+        $idp->logoutRequest($this->session, $redirectTo);
+    }
 
     public function getAttributes()
     {

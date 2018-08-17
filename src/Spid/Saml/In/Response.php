@@ -16,7 +16,7 @@ class Response extends Base
     public function validate()
     {
         if (!isset($_POST) || !isset($_POST['SAMLResponse'])) {
-            throw new \Exception("SAML response not found");
+            return false;
         }
 
         $xmlString = base64_decode($_POST['SAMLResponse']);
@@ -55,10 +55,9 @@ class Response extends Base
         }
 
         // Response OK
-        unset($_SESSION['RequestID']);
-
         $session = $this->spidSession($xml);
-
+        unset($_SESSION['RequestID']);
+        unset($_SESSION['idpName']);
         return $session;
     }
 
@@ -74,6 +73,7 @@ class Response extends Base
             }
         }
 
+        $session->idp = $_SESSION['idpName'];
         $session->attributes = $attributes;
         $session->level = substr($xml->getElementsByTagName('AuthnContextClassRef')->item(0)->nodeValue, -1);
         return $session;

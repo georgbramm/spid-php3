@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: lorenzocattaneo
- * Date: 17/08/18
- * Time: 10:12
- */
 
 namespace SpidPHP\Spid\Saml\Out;
-
 
 class LogoutRequest extends Base
 {
@@ -21,5 +14,12 @@ class LogoutRequest extends Base
 </LogoutRequest>
 XML;
 
+    }
+
+    public function redirectUrl($redirectTo = null)
+    {
+        if (is_null($this->xml)) $this->generateXml();
+        $url = $this->idp->metadata['idpSSO'];
+        return parent::redirectUrl($url, $redirectTo);
     }
 }
