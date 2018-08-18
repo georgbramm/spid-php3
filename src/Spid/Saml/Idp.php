@@ -23,17 +23,21 @@ class Idp implements IdpInterface
 
     public function loadFromXml($xmlFile)
     {
-        if (!file_exists($this->settings['idp_metadata_folder'] . $xmlFile . ".xml")) {
-            throw new \Exception("Invalid IDP Requested", 1);
+        $fileName = $this->settings['idp_metadata_folder'] . $xmlFile . ".xml";
+        if (!file_exists($fileName)) {
+            throw new \Exception("Metadata file $fileName not found", 1);
         }
 
-        $xml = simplexml_load_file($this->settings['idp_metadata_folder'] . $xmlFile . '.xml');
+        $xml = simplexml_load_file($fileName);
+
+        $xml->registerXPathNamespace('md', 'urn:oasis:names:tc:SAML:2.0:metadata');
+        $xml->registerXPathNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
 
         $metadata = array();
         $metadata['idpEntityId'] = $xml->attributes()->entityID->__toString();
-        $metadata['idpSSO'] = $xml->xpath('//SingleSignOnService')[0]->attributes()->Location->__toString();
-        $metadata['idpSLO'] = $xml->xpath('//SingleLogoutService')[0]->attributes()->Location->__toString();
-        $metadata['idpCertValue'] = $xml->xpath('//X509Certificate')[0]->__toString();
+        $metadata['idpSSO'] = $xml->xpath('//md:SingleSignOnService')[0]->attributes()->Location->__toString();
+        $metadata['idpSLO'] = $xml->xpath('//md:SingleLogoutService')[0]->attributes()->Location->__toString();
+        $metadata['idpCertValue'] = $xml->xpath('//ds:X509Certificate')[0]->__toString();
 
         $this->idpFileName = $xmlFile;
         $this->metadata = $metadata;
