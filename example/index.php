@@ -5,14 +5,17 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+$base = "https://sp.example.com";
 $settings = [
-    'sp_entityid' => 'http://sp3.simevo.com/',
+    'sp_entityid' => $base,
     'sp_key_file' => './sp.key',
     'sp_cert_file' => './sp.crt',
-    'sp_assertionconsumerservice' => ['http://sp3.simevo.com/acs'],
-    'sp_singlelogoutservice' => 'http://sp3.simevo.com/slo',
-    'sp_org_name' => 'test_simevo',
-    'sp_org_display_name' => 'Test Simevo',
+    'sp_assertionconsumerservice' => [
+        $base . '/acs'
+    ],
+    'sp_singlelogoutservice' => $base . '/slo',
+    'sp_org_name' => 'test',
+    'sp_org_display_name' => 'Test',
     'idp_metadata_folder' => './idp_metadata/',
     'sp_attributeconsumingservice' => [
         ["name", "familyName", "fiscalNumber", "email"],
