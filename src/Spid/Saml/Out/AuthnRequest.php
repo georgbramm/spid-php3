@@ -2,7 +2,7 @@
 
 namespace Italia\Spid3\Spid\Saml\Out;
 
-use Italia\Spid3\Interfaces\AuthnRequestInterface;
+use Italia\Spid3\Spid\Interfaces\AuthnRequestInterface;
 
 class AuthnRequest extends Base implements AuthnRequestInterface
 {

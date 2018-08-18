@@ -2,7 +2,7 @@
 
 namespace Italia\Spid3\Spid\Saml\In;
 
-use Italia\Spid3\Session;
+use Italia\Spid3\Spid\Session;
 
 class Response extends Base
 {

@@ -2,8 +2,8 @@
 
 namespace Italia\Spid3\Spid\Saml\Out;
 
-use Italia\Spid3\Saml\Idp;
-use Italia\Spid3\Saml\Settings;
+use Italia\Spid3\Spid\Saml\Idp;
+use Italia\Spid3\Spid\Saml\Settings;
 
 class Base
 {
