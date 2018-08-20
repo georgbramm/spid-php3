@@ -7,14 +7,14 @@
 > ⚠️ **WORK IN PROGRESS** ⚠️
 
 # spid-php3
-PHP package for SPID authentication
+PHP package for SPID authentication.
 
 This PHP package is aimed at implementing SPID **Service Providers**. [SPID](https://www.spid.gov.it/) is the Italian digital identity system, which enables citizens to access all public services with a single set of credentials. This package provides a layer of abstraction over the SAML protocol by exposing just the subset required in order to implement SPID authentication in a web application.
 
 Features:
 - provides a **lean implementation** without relying on external SAML packages
 - **routing-agnostic**, can be integrated in any web framework / CMS
-- **sessionless** (apart from a short-lived internal session used to store the request ID until the Identity Provider responds)
+- uses a **session** to store the authentication result and the received attributes
 - does not currently support Attribute Authority (AA).
 
 Alternatives for PHP:
@@ -34,11 +34,11 @@ Alternatives for other languages:
 
 ## Getting Started
 
-Tested on: Debian 9.4 (stretch) amd64.
+Tested on: amd64 Debian 9.5 (stretch, current stable) with PHP 7.0.
 
 ### Prerequisites
 
-```
+```sh
 sudo apt install composer make openssl php-curl php-zip php-xml phpunit
 ```
 
@@ -50,10 +50,10 @@ Before using this package, you must:
 
 2. Download and verify the Identity Provider (IdP) metadata files; it is advised to place them in a separate [idp_metadata/](example/idp_metadata/) directory. A convenience tool is provided for this purpose: [bin/download_idp_metadata.php](bin/download_idp_metadata.php).
 
-3. Generate key and certificate for the Service Provider (SP). You can use the provided [Makefile](Makefile).
+3. Generate key and certificate for the Service Provider (SP).
 
-All steps can be performed with:
-```
+All steps can be performed in an unattended fashion with:
+```sh
 composer install --no-dev
 make
 bin/download_idp_metadata.php
@@ -66,58 +66,79 @@ bin/download_idp_metadata.php
 All classes provided by this package reside in the `Italia\Spid3` namespace.
 
 Load them using the composer-generated autoloader:
-```
+```php
 require_once(__DIR__ . "/../vendor/autoload.php");
 ```
 
 The main class is `Italia\Spid3\Sp` (service provider), sample instantiation:
 
-```
+```php
 $settings = array(
-    'entityId' => 'https://example.com/myservice',
+    'sp_entityid' => 'https://example.com/myservice',
+    'idp_metadata_folder' => './idp_metadata/',
     ...
 );
 $sp = new Italia\Spid3\Sp($settings);
 ```
 
-Register the IdPs with the service provider, either load all IdP metadata at once:
-```
-$sp->loadIdpMetadata('idp_metadata');
-```
-or load only selected IdPs:
-```
-$sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/testenv2.xml'); // 0 = Test IDP
-$sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_1.xml');    // 1 = Infocert ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_2.xml');    // 2 = Poste ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_3.xml');    // 3 = Tim ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_4.xml');    // 4 = Sielte ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_5.xml');    // 5 = Aruba ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_6.xml');    // 6 = Namirial ID
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_7.xml');    // 7 = SPIDItalia Register.it
-// $sp->loadIdpFromFile('/srv/spid-myservice/idp_metadata/idp_8.xml');    // 8 = Intesa ID
+By default the the service provider loads all IdP metadata found in the specified `idp_metadata_folder` and is ready for use, as in:
 
-```
-
-The service provider is now ready for use.
-
-The low-level interface allows fine-grained control on the communication with the IdP:
-```
-$idp = $sp->getIdp('idp_1');
-$authnRequest = idp->$authnRequest(0, 1, 2, 'https://example.com/return_to_url');
-$url = $authnRequest->redirectUrl();
-header($url);
-```
-
-The high-level interface is more straightforward:
-```
-$sp->login(0, 1, 2, 'https://example.com/return_to_url');
-$sp->logout();
+```php
+// shortname of IdP, same as the name of corresponding IdP metadata file, without .xml
+$idpName = 'testenv';
+// return url
+$returnTo = 'https://example.com/return_to_url';
+// index of assertion consumer service as per the SP metadata
+$assertId = 0;
+// index of attribute consuming service as per the SP metadata
+$attrId = 1;
+// SPID level (1, 2 or 3)
+$spidLevel = 1;
+$sp->login($idpName, $assertId, $attrId, $redirectTo, $spidLevel);
+...
 $attributes = $sp->getAttributes();
+var_dump($attributes);
+$sp->logout();
 ```
 
 ### Example
 
-TODO
+A basic demo application is provided in the [example/](example/) directory.
+
+To use:
+
+1. in `example/index.php`:
+
+  - adapt the base url (`$base`) to your needs (use am IP address or a FQDN that is visible to the IdP)
+
+2. in `example/login.php` change the IdP that will be used to login
+
+3. Serve the `example` dir from your preferred webserver
+
+4. visit https://sp.example.com/metadata.php to get the SP (Service Provider) metadata, then copy these over to the IdP and register the SP
+
+5. visit: https://sp.example.com and click `login`.
+
+This screencast shows what you should see if all goes well:
+
+![img](images/screencast.gif)
+
+## Troubleshooting
+
+It is advised to install a browser plugin to trace SAML messages:
+
+- Firefox:
+
+  - [SAML-tracer by Olav Morken, Jaime Perez](https://addons.mozilla.org/en-US/firefox/addon/saml-tracer/)
+  - [SAML Message Decoder by Magnus Suther](https://addons.mozilla.org/en-US/firefox/addon/saml-message-decoder-extension/)
+
+- Chrome/Chromium:
+
+  - [SAML Message Decoder by Magnus Suther](https://chrome.google.com/webstore/detail/saml-message-decoder/mpabchoaimgbdbbjjieoaeiibojelbhm)
+  - [SAML Chrome Panel by MLai](https://chrome.google.com/webstore/detail/saml-chrome-panel/paijfdbeoenhembfhkhllainmocckace)
+  - [SAML DevTools extension by stefan.rasmusson.as](https://chrome.google.com/webstore/detail/saml-devtools-extension/jndllhgbinhiiddokbeoeepbppdnhhio)
+
+In addition, you can use the [SAML Developer Tools](https://www.samltool.com/online_tools.php) provided by onelogin to understand what is going on
 
 ## Testing
 
@@ -147,10 +168,10 @@ For your contributions please use the [git-flow workflow](https://danielkummer.g
 
 ## Authors
 
-TODO
+Lorenzo Cattaneo and Paolo Greppi.
 
 ## License
 
-Copyright (c) 2018, Paolo Greppi <paolo.greppi@simevo.com>
+Copyright (c) 2018, simevo s.r.l.
 
 License: BSD 3-Clause, see [LICENSE](LICENSE) file.
