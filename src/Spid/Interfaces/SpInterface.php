@@ -1,36 +1,36 @@
 <?php
 
-namespace Spid;
+namespace Italia\Spid3\Spid\Interfaces;
 
 // service provider class
 interface SpInterface
 {
-    // $settings = array(
-    //     'entityId' => 'https://example.com/myservice', // https protocol, no trailing slash
-    //     'keyFile' => '/srv/spid-wordpress/sp.key',
-    //     'certFile' => '/srv/spid-wordpress/sp.crt',
-    //     'sls' => '/?sls', // path relative to entityId base url or full url
-    //     'assCs' => array(
+    // $settings = [
+    //     'sp_entityid' => $base, // preferred: https protocol, no trailing slash
+    //     'sp_key_file' => './sp.key', // absolute path or relative to service root folder
+    //     'sp_cert_file' => './sp.crt', // absolute path or relative to service root folder
+    //     'sp_assertionconsumerservice' => [
     //         // array of assertion consuming services
     //         // order is important ! the 0-base index in this array will be used in the calls
-    //         '/?acs1', // path relative to entityId base url or full url
-    //         '/acs2/?test',
-    //     ),
-    //     'attrCs' => array(
+    //         $base . '/acs'
+    //     ],
+    //     'sp_singlelogoutservice' => $base . '/slo',  // path relative to sp_entityid base url or full url
+    //     'sp_org_name' => 'test',
+    //     'sp_org_display_name' => 'Test',
+    //     'idp_metadata_folder' => './idp_metadata/',
+    //     'sp_attributeconsumingservice' => [
     //         // array of attribute consuming services
     //         // order is important ! the 0-base index in this array will be used in the calls
-    //         array('name', 'familyName', 'fiscalNumber', 'email'),
-    //         array('fiscalNumber', 'email')
-    //     ),
-    //     'organisationName' => 'xxx', // optional
-    //     'organizationUrl' => 'xxx', // optional
-    // );
-    public function __construct($settings);
+    //         ["name", "familyName", "fiscalNumber", "email"],
+    //         ["name", "familyName", "fiscalNumber", "email", "spidCode"]
+    //         ]
+    //     ];
+    public function __construct(array $settings);
 
     // loads all Identity Providers metadata found in path
     public function loadIdpMetadata($path);
 
-    // load selected Identity Provider
+    // loads selected Identity Provider
     public function loadIdpFromFile($filename);
 
     // returns SP XML metadata as a string
@@ -54,7 +54,7 @@ interface SpInterface
     // $attr: index of attribute consuming service as per the SP metadata
     // $level: SPID level (1, 2 or 3)
     // $returnTo: return url
-    public function login($idpName, $ass, $attr, $redirectTo = '', $level = 1);
+    public function login($idpName, $ass, $attr, $redirectTo = null, $level = 1);
 
     // returns false if no response from IdP is found
     // else processes the response, reports errors if any
