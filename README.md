@@ -4,7 +4,7 @@
 [![Get invited](https://slack.developers.italia.it/badge.svg)](https://slack.developers.italia.it/)
 [![SPID on forum.italia.it](https://img.shields.io/badge/Forum-SPID-blue.svg)](https://forum.italia.it/c/spid)
 
-> ⚠️ **WORK IN PROGRESS** ⚠️
+> ⚠️ **REPOSITORY NON PIÙ MANTENUTO. PER UNA VERSIONE AGGIORNATA DELLA LIBRERIA VEDERE italia/spid-php-lib** ⚠️
 
 # spid-php3
 PHP package for SPID authentication.
